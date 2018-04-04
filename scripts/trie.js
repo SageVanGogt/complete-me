@@ -8,68 +8,70 @@ class Trie {
 
   add(word) {
     let currentNode = this.root;
-    let childExistCount = 0;
 
-   for (let i = 0; i < word.length; i++) {
-     if (!currentNode.children[word[i]]) {
-       currentNode.children[word[i]] = new Node(word[i]);
-     } else {
-      childExistCount++;
-     }
-     currentNode = currentNode.children[word[i]];
-   }
+    for (let i = 0; i < word.length; i++) {
+      if (!currentNode.children[word[i]]) {
+        currentNode.children[word[i]] = new Node(word[i]);
+      } 
 
-    currentNode.isWord = true;
-    this.increaseWordCount(childExistCount, word.length);
-  }
-
-  increaseWordCount(noNewLetters, addedWord) {
-    if (noNewLetters != addedWord) {
+      currentNode = currentNode.children[word[i]];
+    }
+    if (!currentNode.isWord) {
+      currentNode.isWord = true;
       this.wordCount++;
     }
   }
 
-  suggest(str) {
+  findStartNode(str) {
     let strArray = Array.from(str); 
     let currentNode = this.root;
 
     while (strArray.length) {
       let letter = strArray.shift();
       let child = currentNode.children[letter];
-
+      if(!child) {
+        return null;
+      }
+  
       currentNode = child; 
     }
+    return currentNode
+  }
+
+  suggest(str) {
+    this.suggestions = [];
+    let currentNode = this.findStartNode(str);
+    
+    if(!currentNode) { return null };
 
     this.findWordSuggestions(currentNode, str);
 
-    return this.suggestions
+    return this.suggestions;
   }
   
   findWordSuggestions(startingNode, prefix) {
+    if (startingNode.isWord) {
+      this.suggestions.push(prefix);
+    }
     Object.keys(startingNode.children).forEach( childLetter => {
       let currentNode = startingNode.children[childLetter];
       
-      if (currentNode.isWord) {
-        this.suggestions.push(prefix + childLetter);
-      }
       return this.findWordSuggestions(currentNode, prefix + childLetter);      
     })
   }
 
+  delete(str) {
+    let currentNode = this.findStartNode(str)
+    if (currentNode.isWord) {
+      currentNode.isWord = false;
+      this.wordCount--;
+    }
+  }
+  
   populate(data) {
     data.forEach( word => this.add(word));
   }
-  // createWord(prefix, letter) {
-  //   this.suggestions.push(
-  //     {
-  //       word: prefix + letter
-  //     }
-  //   )
-  //   return;
-  // }
-  
 
 }
 
 module.exports = Trie;
-

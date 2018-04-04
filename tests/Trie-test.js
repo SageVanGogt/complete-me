@@ -58,10 +58,42 @@ describe ('Trie', () => {
 
 
       let suggested = trie.suggest('Zyz');
-      console.log(suggested)
+      // console.log(suggested)
       
       assert.deepEqual(suggested, ['Zyzomys', 'Zyzzogeton']);
+      
+    })
+  })
+    
+  describe('delete', () => {
+    it('should delete a suggestion', () => {
+      let trie = new Trie() 
 
+      trie.add('cat')
+      trie.add('catius')
+      trie.add('cactus')
+      trie.add('cathere')
+
+      trie.delete('cactus')
+
+      let suggested = trie.suggest('ca')
+      // console.log(suggested)
+      assert.deepEqual(suggested, ['cat', 'catius', 'cathere'])
+    })
+
+    it('should decrease wordcount', () => {
+      let trie = new Trie() 
+
+      trie.add('cat')
+      trie.add('catius')
+      trie.add('cactus')
+      trie.add('cathere')
+
+      assert.equal(trie.wordCount, 4)
+
+      trie.delete('cactus')
+
+      assert.equal(trie.wordCount, 3)
     })
   })
 
