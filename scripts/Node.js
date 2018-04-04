@@ -3,6 +3,5 @@ export default class Node {
     this.letter = letter;
     this.children = {};
     this.isWord = false;
-    this.suggestions = [];
   }
 }
