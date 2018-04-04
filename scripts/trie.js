@@ -7,21 +7,17 @@ class Trie {
   }
 
   add(word) {
-    let wordArray = Array.from(word)
     let currentNode = this.root;
     let childExistCount = 0;
 
-    while (wordArray.length) {
-      let letter = wordArray.shift();
-      let child = currentNode.children[letter];
-      if (!child) {
-        child = new Node(letter);
-        currentNode.children[letter] = child;
-      } else {
-        childExistCount++;
-      }
-      currentNode = currentNode.children[letter];
-    }
+   for (let i = 0; i < word.length; i++) {
+     if (!currentNode.children[word[i]]) {
+       currentNode.children[word[i]] = new Node(word[i]);
+     } else {
+      childExistCount++;
+     }
+     currentNode = currentNode.children[word[i]];
+   }
 
     currentNode.isWord = true;
     this.increaseWordCount(childExistCount, word.length);
@@ -61,7 +57,7 @@ class Trie {
   }
 
   populate(data) {
-    data.forEach( word => this.add(data));
+    data.forEach( word => this.add(word));
   }
   // createWord(prefix, letter) {
   //   this.suggestions.push(

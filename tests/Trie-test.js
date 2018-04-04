@@ -1,7 +1,7 @@
 const Trie = require('./..//scripts/trie');
 const chai = require('chai');
 const assert = chai.assert;
-import fs from 'fs';
+const fs = require('fs')
 
 const text = "/usr/share/dict/words"
 const dictionary = fs.readFileSync(text).toString().trim().split('\n');
@@ -9,13 +9,13 @@ const dictionary = fs.readFileSync(text).toString().trim().split('\n');
 describe ('Trie', () => {
 
   describe('insert', () => {
-    it('should add new words to the trie', () => {
-      // const trie = new Trie();
+    it.skip('should add new words to the trie', () => {
+      const trie = new Trie();
 
-      // trie.add('pizza');
-      // trie.add('pizzeria');
+      trie.add('pizza');
+      trie.add('pizzeria');
       
-      // assert.equal(trie, )
+      assert.equal(trie, )
     })
 
     it('should not increase wordcount of trie contains word', () => {
@@ -48,11 +48,20 @@ describe ('Trie', () => {
 
 
       let suggested = trie.suggest('pup');
-      console.log(suggested)
       assert.deepEqual(suggested, ['puppy', 'puppers']);
+    })
 
-      // console.log(JSON.stringify(trie, null, 2));
-      // console.log(trie)
+    it('should suggest possible words from a given prefix', () => {
+      const trie = new Trie();
+
+      trie.populate(dictionary)
+
+
+      let suggested = trie.suggest('Zyz');
+      console.log(suggested)
+      
+      assert.deepEqual(suggested, ['Zyzomys', 'Zyzzogeton']);
+
     })
   })
 
