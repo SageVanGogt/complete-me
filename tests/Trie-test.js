@@ -9,28 +9,43 @@ const dictionary = fs.readFileSync(text).toString().trim().split('\n');
 describe ('Trie', () => {
 
   describe('insert', () => {
-    it.skip('should add new words to the trie', () => {
+    it('should add new words to the trie', () => {
       const trie = new Trie();
 
       trie.add('pizza');
+
+      assert.equal(trie.wordCount, 1);
+      
       trie.add('pizzeria');
       
-      assert.equal(trie, )
+      assert.equal(trie.wordCount, 2);
     })
 
     it('should not increase wordcount of trie contains word', () => {
       const trie = new Trie();
 
-      trie.add('apple')
-      trie.add('apple')
-      trie.add('pizza')
-      trie.add('party')
+      trie.add('apple');
+      trie.add('apple');
+      trie.add('Apple');
+      trie.add('pizza');
+      trie.add('party');
 
-      assert.equal(trie.wordCount, 3)
+      assert.equal(trie.wordCount, 3);
+    })
+
+    it('should not increase wordcount if a similar word is added but with capitals', () => {
+      const trie = new Trie();
+
+      trie.add('apple');
+      trie.add('apple');
+      trie.add('Apple');
+      trie.add('aPPle');
+
+      assert.equal(trie.wordCount, 1);
     })
 
     it('should take in a large data set and add to trie', () => {
-      const completion = new Trie()
+      const completion = new Trie();
 
       completion.populate(dictionary);
 
@@ -51,16 +66,25 @@ describe ('Trie', () => {
       assert.deepEqual(suggested, ['puppy', 'puppers']);
     })
 
-    it('should suggest possible words from a given prefix', () => {
+    it('should not be case sensative', () => {
+      const trie = new Trie();
+
+      trie.add('puppy');
+      trie.add('puppers');
+
+
+      let suggested = trie.suggest('PUP');
+      assert.deepEqual(suggested, ['puppy', 'puppers']);
+    })
+
+    it('should search large trie and suggest possible words from a given prefix', () => {
       const trie = new Trie();
 
       trie.populate(dictionary)
 
-
-      let suggested = trie.suggest('Zyz');
-      // console.log(suggested)
+      let suggested = trie.suggest('zyz')
       
-      assert.deepEqual(suggested, ['Zyzomys', 'Zyzzogeton']);
+      assert.deepEqual(suggested, ['zyzomys', 'zyzzogeton']);
       
     })
   })

@@ -6,8 +6,9 @@ class Trie {
     this.suggestions = [];   
   }
 
-  add(word) {
+  add(inputWord) {
     let currentNode = this.root;
+    let word = inputWord.toLowerCase();
 
     for (let i = 0; i < word.length; i++) {
       if (!currentNode.children[word[i]]) {
@@ -38,8 +39,9 @@ class Trie {
     return currentNode
   }
 
-  suggest(str) {
+  suggest(inputStr) {
     this.suggestions = [];
+    let str = inputStr.toLowerCase();
     let currentNode = this.findStartNode(str);
     
     if(!currentNode) { return null };
