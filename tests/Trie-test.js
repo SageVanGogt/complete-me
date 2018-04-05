@@ -49,8 +49,7 @@ describe ('Trie', () => {
 
       completion.populate(dictionary);
 
-      assert.equal(completion.wordCount, 235886);
-      
+      assert.equal(completion.wordCount, 234371);
     })
   }),
 
@@ -80,9 +79,9 @@ describe ('Trie', () => {
     it('should search large trie and suggest possible words from a given prefix', () => {
       const trie = new Trie();
 
-      trie.populate(dictionary)
+      trie.populate(dictionary);
 
-      let suggested = trie.suggest('zyz')
+      let suggested = trie.suggest('zyz');
       
       assert.deepEqual(suggested, ['zyzomys', 'zyzzogeton']);
       
@@ -91,34 +90,51 @@ describe ('Trie', () => {
     
   describe('delete', () => {
     it('should delete a suggestion', () => {
-      let trie = new Trie() 
+      let trie = new Trie(); 
 
-      trie.add('cat')
-      trie.add('catius')
-      trie.add('cactus')
-      trie.add('cathere')
+      trie.add('cat');
+      trie.add('catius');
+      trie.add('cactus');
+      trie.add('cathere');
 
-      trie.delete('cactus')
+      trie.delete('cactus');
 
-      let suggested = trie.suggest('ca')
-      // console.log(suggested)
-      assert.deepEqual(suggested, ['cat', 'catius', 'cathere'])
+      let suggested = trie.suggest('ca');
+      
+      assert.deepEqual(suggested, ['cat', 'catius', 'cathere']);
     })
 
     it('should decrease wordcount', () => {
-      let trie = new Trie() 
+      let trie = new Trie(); 
 
-      trie.add('cat')
-      trie.add('catius')
-      trie.add('cactus')
-      trie.add('cathere')
+      trie.add('cat');
+      trie.add('catius');
+      trie.add('cactus');
+      trie.add('cathere');
 
-      assert.equal(trie.wordCount, 4)
+      assert.equal(trie.wordCount, 4);
 
-      trie.delete('cactus')
+      trie.delete('cactus');
 
-      assert.equal(trie.wordCount, 3)
+      assert.equal(trie.wordCount, 3);
     })
+  })
+
+  describe('select', () => {
+
+    it('should increase our nodes chosen count', () => {
+      let trie = new Trie();
+
+      trie.add('boat');
+      trie.add('bore');
+      trie.add('blob');
+      trie.select('boat');
+      let currNode = trie.findStartNode('boat');
+      let suggestions = trie.suggest('bo');
+
+      assert.equal(currNode.chosen, 1);
+    })
+
   })
 
 })

@@ -3,18 +3,18 @@ class Trie {
   constructor() {
     this.root = new Node(null)
     this.wordCount = 0; 
-    this.suggestions = [];   
+    this.suggestions = [];  
+    this.suggestionsWordOnly = [];
   }
 
   add(inputWord) {
-    let currentNode = this.root;
     let word = inputWord.toLowerCase();
+    let currentNode = this.root;
 
     for (let i = 0; i < word.length; i++) {
       if (!currentNode.children[word[i]]) {
         currentNode.children[word[i]] = new Node(word[i]);
-      } 
-
+      }
       currentNode = currentNode.children[word[i]];
     }
     if (!currentNode.isWord) {
@@ -33,47 +33,79 @@ class Trie {
       if(!child) {
         return null;
       }
-  
       currentNode = child; 
     }
     return currentNode
   }
-
+  
   suggest(inputStr) {
-    this.suggestions = [];
+    this.resetSuggestions();
     let str = inputStr.toLowerCase();
     let currentNode = this.findStartNode(str);
     
     if(!currentNode) { return null };
-
     this.findWordSuggestions(currentNode, str);
 
-    return this.suggestions;
+    this.sortSuggestions();
+    this.getSuggestions();
+  
+    return this.suggestionsWordOnly;
+  }
+
+  sortSuggestions() {
+    this.suggestions.sort( (a, b) => {
+      return b.chosen - a.chosen 
+    })
+  }
+
+  getSuggestions() {
+    this.suggestions.forEach(wordObj => {
+      this.suggestionsWordOnly.push(wordObj.word);
+    })
   }
   
   findWordSuggestions(startingNode, prefix) {
     if (startingNode.isWord) {
-      this.suggestions.push(prefix);
+      this.formatSuggestion(startingNode, prefix)
     }
     Object.keys(startingNode.children).forEach( childLetter => {
       let currentNode = startingNode.children[childLetter];
-      
       return this.findWordSuggestions(currentNode, prefix + childLetter);      
     })
   }
 
+  formatSuggestion(node, word) {
+    this.suggestions.push({
+      word: word,
+      commonality: node.chosen
+    });
+  }
+  
   delete(str) {
-    let currentNode = this.findStartNode(str)
+    let currentNode = this.findStartNode(str);
+    
     if (currentNode.isWord) {
       currentNode.isWord = false;
       this.wordCount--;
     }
   }
-  
-  populate(data) {
-    data.forEach( word => this.add(word));
+
+  select(word) {
+    let currNode = this.findStartNode(word);
+
+    currNode.chosen++;
   }
 
+  resetSuggestions() {
+    this.suggestions = [];
+    this.suggestionsWordOnly = [];
+    
+  }
+  
+  populate(dictionary) {
+    dictionary.forEach( word => this.add(word));
+  }
+  
 }
 
 module.exports = Trie;
