@@ -1,10 +1,10 @@
 import Node from './Node.js'
 class Trie {
   constructor() {
-    this.root = new Node(null)
+    this.root = new Node(null);
     this.wordCount = 0; 
     this.suggestions = [];  
-    this.suggestionsWordOnly = [];
+    this.sortedSuggestions = [];
   }
 
   add(inputWord) {
@@ -44,24 +44,12 @@ class Trie {
     let currentNode = this.findStartNode(str);
     
     if(!currentNode) { return null };
-    this.findWordSuggestions(currentNode, str);
+    this.findWordSuggestions(currentNode, str); //create suggestions array w unsorted objects
 
-    this.sortSuggestions();
-    this.getSuggestions();
+    this.sortSuggestions(); //takes suggestions array full of objects and sorts them by weight
+    this.getSuggestions(); //iterates over sorted suggestions and pushed obj.word into sortedsuggestions array
   
-    return this.suggestionsWordOnly;
-  }
-
-  sortSuggestions() {
-    this.suggestions.sort( (a, b) => {
-      return b.chosen - a.chosen 
-    })
-  }
-
-  getSuggestions() {
-    this.suggestions.forEach(wordObj => {
-      this.suggestionsWordOnly.push(wordObj.word);
-    })
+    return this.sortedSuggestions;
   }
   
   findWordSuggestions(startingNode, prefix) {
@@ -71,6 +59,18 @@ class Trie {
     Object.keys(startingNode.children).forEach( childLetter => {
       let currentNode = startingNode.children[childLetter];
       return this.findWordSuggestions(currentNode, prefix + childLetter);      
+    })
+  }
+  
+  sortSuggestions() {
+    this.suggestions.sort( (a, b) => {
+      return b.chosen - a.chosen 
+    })
+  }
+
+  getSuggestions() {
+    this.suggestions.forEach(wordObj => {
+      this.sortedSuggestions.push(wordObj.word);
     })
   }
 
@@ -98,7 +98,7 @@ class Trie {
 
   resetSuggestions() {
     this.suggestions = [];
-    this.suggestionsWordOnly = [];
+    this.sortedSuggestions = [];
     
   }
   
