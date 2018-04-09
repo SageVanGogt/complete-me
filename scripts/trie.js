@@ -64,7 +64,7 @@ class Trie {
   
   sortSuggestions() {
     this.suggestions.sort( (a, b) => {
-      return b.chosen - a.chosen 
+      return b.commonality - a.commonality;
     })
   }
 
