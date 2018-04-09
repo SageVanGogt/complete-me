@@ -84,7 +84,26 @@ describe ('Trie', () => {
       let suggested = trie.suggest('zyz');
       
       assert.deepEqual(suggested, ['zyzomys', 'zyzzogeton']);
-      
+    })
+
+    it('should sort suggestions with a higher word commonality', () => {
+      const trie = new Trie();
+
+      trie.add('ketchup');
+      trie.add('kettle');
+      trie.add('ketan');
+      trie.add('fuego');
+      trie.add('aprt');
+      trie.select('ketan');
+      trie.select('ketan');
+      trie.select('ketan');
+      trie.select('ketchup')
+      trie.select('ketchup')
+      trie.select('kettle')
+
+      let suggested = trie.suggest('ket')
+
+      assert.deepEqual(suggested, ['ketan', 'ketchup', 'kettle'])
     })
   })
     
